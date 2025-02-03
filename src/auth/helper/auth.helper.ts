@@ -41,9 +41,6 @@ export class AuthHelper {
                 email: dto.email
             }
         });
-        console.log(user);
-        console.log(dto.password);
-        console.log(user.password);
 
         if (!user) {
             throw new ForbiddenException("Invalid credentials");
@@ -59,5 +56,4 @@ export class AuthHelper {
     async comparePassword(hash: string, password: string) {
         return argon.verify(hash, password);
     }
-
 }
