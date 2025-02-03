@@ -3,9 +3,8 @@ import { User, Bookmark } from '@prisma/client'
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { signUpInputDto, loginInputDto } from './dto';
-import * as argon2 from 'argon2';
+import * as argon from 'argon2';
 import { AuthHelper } from './helper/auth.helper';
-import { stat } from 'fs';
 @Injectable()
 export class AuthService {
 
@@ -17,7 +16,7 @@ export class AuthService {
     async signup(
         @Body() dto: signUpInputDto,
     ) {
-        const hash = await argon2.hash(dto.password);
+        const hash = await argon.hash(dto.password);
         const user = this.authHelper.creteUser(dto, hash);
         return user;
     }
