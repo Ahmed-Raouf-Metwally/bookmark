@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  dev-db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_DATABASE=bookmark
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=123
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - bookmark-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mysql://admin:123@dev-db:3306/bookmark
+    depends_on:
+      dev-db:
+        condition: service_healthy
+
+networks:
+  bookmark-network:
+  
+volumes:
+  mysql_data:
