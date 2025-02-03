@@ -2,7 +2,7 @@ import { Body, Injectable, Req } from '@nestjs/common';
 import { User, Bookmark } from '@prisma/client'
 import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthDto } from './dto';
+import { signUpInputDto, loginInputDto } from './dto';
 import * as argon2 from 'argon2';
 import { AuthHelper } from './helper/auth.helper';
 import { stat } from 'fs';
@@ -15,19 +15,16 @@ export class AuthService {
     ) { }
 
     async signup(
-        @Body() dto: AuthDto,
+        @Body() dto: signUpInputDto,
     ) {
         const hash = await argon2.hash(dto.password);
         const user = this.authHelper.creteUser(dto, hash);
         return user;
     }
-    login(
-        @Body() dto: AuthDto,
+    async login(
+        @Body() dto: loginInputDto,
     ) {
-        return {
-            message: 'login'
-        };
+        const user = await this.authHelper.validateUser(dto);
+        return user;
     }
-
-
 }
